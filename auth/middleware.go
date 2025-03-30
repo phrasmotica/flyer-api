@@ -1,19 +1,12 @@
 package auth
 
 import (
-	"log"
 	"net/http"
-	"os"
+	"phrasmotica/flyer-api/logging"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slices"
-)
-
-// TODO: put these in a more central place, or inject them as dependencies
-var (
-	Info  *log.Logger = log.New(os.Stdout, "INFO: ", log.LstdFlags|log.Lshortfile)
-	Error *log.Logger = log.New(os.Stdout, "ERROR: ", log.LstdFlags|log.Lshortfile)
 )
 
 // taken from https://stackoverflow.com/a/29439630
@@ -43,14 +36,14 @@ func TokenAuth(optional bool) gin.HandlerFunc {
 				return
 			}
 
-			Error.Println("Request does not contain an access token")
+			logging.Error.Println("Request does not contain an access token")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		claims, err := ValidateToken(tokenString)
 		if err != nil {
-			Error.Println(err.Error())
+			logging.Error.Println(err.Error())
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -63,8 +56,8 @@ func TokenAuth(optional bool) gin.HandlerFunc {
 		roles := claims.ResourceAccess[claims.Azp].Roles
 		c.Set("roles", roles)
 
-		Info.Printf("Roles for user %s\n", claims.Username)
-		Info.Println(roles)
+		logging.Info.Printf("Roles for user %s\n", claims.Username)
+		logging.Info.Println(roles)
 
 		c.Next()
 	}
@@ -76,7 +69,7 @@ func CheckPermission(permission string) gin.HandlerFunc {
 		roles := c.GetStringSlice("roles")
 
 		if !slices.Contains(roles, permission) {
-			Error.Printf("User %s does not have the %s permission\n", username, permission)
+			logging.Error.Printf("User %s does not have the %s permission\n", username, permission)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}

@@ -3,8 +3,7 @@ package database
 import (
 	"context"
 	"encoding/json"
-	"log"
-	"os"
+	"phrasmotica/flyer-api/logging"
 	"phrasmotica/flyer-api/models"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
@@ -15,18 +14,13 @@ type TableStorageDatabase struct {
 	Client *aztables.ServiceClient
 }
 
-// TODO: put this in a more central place, or inject it as a dependency
-var (
-	Error *log.Logger = log.New(os.Stdout, "ERROR: ", log.LstdFlags|log.Lshortfile)
-)
-
 func CreateTableStorageClient(connStr string) *aztables.ServiceClient {
 	client, err := aztables.NewServiceClientFromConnectionString(connStr, &aztables.ClientOptions{
 		ClientOptions: policy.ClientOptions{},
 	})
 
 	if err != nil {
-		Error.Fatal(err)
+		logging.Error.Fatal(err)
 		return nil
 	}
 
@@ -50,13 +44,13 @@ func (d *TableStorageDatabase) AddFlyer(ctx context.Context, newFlyer *models.Fl
 
 	marshalled, err := json.Marshal(entity)
 	if err != nil {
-		Error.Println(err)
+		logging.Error.Println(err)
 		return false
 	}
 
 	_, addErr := d.Client.NewClient("Flyers").AddEntity(ctx, marshalled, nil)
 	if addErr != nil {
-		Error.Println(addErr)
+		logging.Error.Println(addErr)
 		return false
 	}
 
