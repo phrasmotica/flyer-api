@@ -20,7 +20,516 @@
     },
     "host": "localhost:8000",
     "basePath": "/",
-    "paths": {},
+    "paths": {
+        "/flyer": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Gets all existing flyers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flyers"
+                ],
+                "summary": "Gets all existing flyers",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new flyer",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flyers"
+                ],
+                "summary": "Creates a new flyer",
+                "parameters": [
+                    {
+                        "description": "The flyer",
+                        "name": "flyer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/contracts.CreateFlyerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "contracts.CreateFlyerRequest": {
+            "type": "object",
+            "properties": {
+                "finishTime": {
+                    "type": "integer"
+                },
+                "phases": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Phase"
+                    }
+                },
+                "ranking": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PlayerRecord"
+                    }
+                },
+                "startTime": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Fixture": {
+            "type": "object",
+            "properties": {
+                "breakerId": {
+                    "type": "string"
+                },
+                "cancelledTime": {
+                    "type": "integer"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "finishTime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isExcluded": {
+                    "type": "boolean"
+                },
+                "parentFixtures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ParentFixture"
+                    }
+                },
+                "scores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Score"
+                    }
+                },
+                "startTime": {
+                    "type": "integer"
+                },
+                "tableId": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.FixtureSwap": {
+            "type": "object",
+            "properties": {
+                "fixtureAId": {
+                    "type": "string"
+                },
+                "fixtureAIndex": {
+                    "type": "integer"
+                },
+                "fixtureBId": {
+                    "type": "string"
+                },
+                "fixtureBIndex": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "roundAIndex": {
+                    "type": "integer"
+                },
+                "roundBIndex": {
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Format": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "Knockout",
+                "RoundRobin",
+                "WinnerStaysOn"
+            ]
+        },
+        "models.MatchLengthModel": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "Fixed",
+                "Variable"
+            ]
+        },
+        "models.MoneySplit": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "WinnerTakesAll",
+                "SeventyThirty",
+                "SixtyTwentyFiveFifteen",
+                "SemiFinalists"
+            ]
+        },
+        "models.ParentFixture": {
+            "type": "object",
+            "properties": {
+                "fixtureId": {
+                    "type": "string"
+                },
+                "takeLoser": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.Phase": {
+            "type": "object",
+            "properties": {
+                "eventLog": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PhaseEvent"
+                    }
+                },
+                "finishTime": {
+                    "type": "integer"
+                },
+                "fixtureSwaps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.FixtureSwap"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "players": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Player"
+                    }
+                },
+                "ranking": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PlayerRecord"
+                    }
+                },
+                "rounds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Round"
+                    }
+                },
+                "settings": {
+                    "$ref": "#/definitions/models.Specification"
+                },
+                "skippedTime": {
+                    "type": "integer"
+                },
+                "startTime": {
+                    "type": "integer"
+                },
+                "tables": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Table"
+                    }
+                },
+                "tieBreakers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.TieBreakerInfo"
+                    }
+                }
+            }
+        },
+        "models.PhaseEvent": {
+            "type": "object",
+            "properties": {
+                "level": {
+                    "$ref": "#/definitions/models.PhaseEventLevel"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PhaseEventLevel": {
+            "type": "integer",
+            "enum": [
+                0
+            ],
+            "x-enum-varnames": [
+                "Default"
+            ]
+        },
+        "models.Player": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PlayerRecord": {
+            "type": "object",
+            "properties": {
+                "diff": {
+                    "type": "integer"
+                },
+                "draws": {
+                    "type": "integer"
+                },
+                "incomplete": {
+                    "type": "boolean"
+                },
+                "losses": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "played": {
+                    "type": "integer"
+                },
+                "playerId": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "runouts": {
+                    "type": "integer"
+                },
+                "tieBroken": {
+                    "type": "boolean"
+                },
+                "wins": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Round": {
+            "type": "object",
+            "properties": {
+                "fixtures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Fixture"
+                    }
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "isGenerated": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "raceTo": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.RuleSet": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "Blackball",
+                "International"
+            ]
+        },
+        "models.Score": {
+            "type": "object",
+            "properties": {
+                "isBye": {
+                    "type": "boolean"
+                },
+                "playerId": {
+                    "type": "string"
+                },
+                "runouts": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Specification": {
+            "type": "object",
+            "properties": {
+                "allowEarlyFinish": {
+                    "type": "boolean"
+                },
+                "bestOf": {
+                    "type": "integer"
+                },
+                "entryFee": {
+                    "type": "number"
+                },
+                "entryFeeRequired": {
+                    "type": "boolean"
+                },
+                "format": {
+                    "$ref": "#/definitions/models.Format"
+                },
+                "matchLengthModel": {
+                    "$ref": "#/definitions/models.MatchLengthModel"
+                },
+                "moneySplit": {
+                    "$ref": "#/definitions/models.MoneySplit"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "raceTo": {
+                    "type": "integer"
+                },
+                "randomlyDrawAllRounds": {
+                    "type": "boolean"
+                },
+                "requireCompletedRounds": {
+                    "type": "boolean"
+                },
+                "ruleSet": {
+                    "$ref": "#/definitions/models.RuleSet"
+                },
+                "stageCount": {
+                    "type": "integer"
+                },
+                "tieBreaker": {
+                    "$ref": "#/definitions/models.TieBreaker"
+                },
+                "winsRequired": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Table": {
+            "type": "object",
+            "properties": {
+                "costPerHour": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.TieBreaker": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "HeadToHead",
+                "Runouts"
+            ]
+        },
+        "models.TieBreakerInfo": {
+            "type": "object",
+            "properties": {
+                "forRank": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "players": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Player"
+                    }
+                },
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PlayerRecord"
+                    }
+                }
+            }
+        }
+    },
     "securityDefinitions": {
         "BearerAuth": {
             "type": "apiKey",

@@ -3,6 +3,7 @@ package main
 import (
 	"phrasmotica/flyer-api/auth"
 	docs "phrasmotica/flyer-api/docs/flyer"
+	"phrasmotica/flyer-api/routes"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -37,6 +38,12 @@ func main() {
 
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	flyers := router.Group("/flyer", auth.TokenAuth(true))
+	{
+		flyers.GET("", routes.GetFlyers)
+		flyers.POST("", routes.PostFlyer)
+	}
 
 	router.Run(":8000")
 }

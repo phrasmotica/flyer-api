@@ -1,4 +1,298 @@
 basePath: /
+definitions:
+  contracts.CreateFlyerRequest:
+    properties:
+      finishTime:
+        type: integer
+      phases:
+        items:
+          $ref: '#/definitions/models.Phase'
+        type: array
+      ranking:
+        items:
+          $ref: '#/definitions/models.PlayerRecord'
+        type: array
+      startTime:
+        type: integer
+    type: object
+  models.Fixture:
+    properties:
+      breakerId:
+        type: string
+      cancelledTime:
+        type: integer
+      comment:
+        type: string
+      finishTime:
+        type: integer
+      id:
+        type: string
+      isExcluded:
+        type: boolean
+      parentFixtures:
+        items:
+          $ref: '#/definitions/models.ParentFixture'
+        type: array
+      scores:
+        items:
+          $ref: '#/definitions/models.Score'
+        type: array
+      startTime:
+        type: integer
+      tableId:
+        type: string
+    type: object
+  models.FixtureSwap:
+    properties:
+      fixtureAId:
+        type: string
+      fixtureAIndex:
+        type: integer
+      fixtureBId:
+        type: string
+      fixtureBIndex:
+        type: integer
+      id:
+        type: string
+      roundAIndex:
+        type: integer
+      roundBIndex:
+        type: integer
+      timestamp:
+        type: integer
+    type: object
+  models.Format:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - Knockout
+    - RoundRobin
+    - WinnerStaysOn
+  models.MatchLengthModel:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - Fixed
+    - Variable
+  models.MoneySplit:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - WinnerTakesAll
+    - SeventyThirty
+    - SixtyTwentyFiveFifteen
+    - SemiFinalists
+  models.ParentFixture:
+    properties:
+      fixtureId:
+        type: string
+      takeLoser:
+        type: boolean
+    type: object
+  models.Phase:
+    properties:
+      eventLog:
+        items:
+          $ref: '#/definitions/models.PhaseEvent'
+        type: array
+      finishTime:
+        type: integer
+      fixtureSwaps:
+        items:
+          $ref: '#/definitions/models.FixtureSwap'
+        type: array
+      id:
+        type: string
+      order:
+        type: integer
+      players:
+        items:
+          $ref: '#/definitions/models.Player'
+        type: array
+      ranking:
+        items:
+          $ref: '#/definitions/models.PlayerRecord'
+        type: array
+      rounds:
+        items:
+          $ref: '#/definitions/models.Round'
+        type: array
+      settings:
+        $ref: '#/definitions/models.Specification'
+      skippedTime:
+        type: integer
+      startTime:
+        type: integer
+      tables:
+        items:
+          $ref: '#/definitions/models.Table'
+        type: array
+      tieBreakers:
+        items:
+          $ref: '#/definitions/models.TieBreakerInfo'
+        type: array
+    type: object
+  models.PhaseEvent:
+    properties:
+      level:
+        $ref: '#/definitions/models.PhaseEventLevel'
+      message:
+        type: string
+      timestamp:
+        type: integer
+    type: object
+  models.PhaseEventLevel:
+    enum:
+    - 0
+    type: integer
+    x-enum-varnames:
+    - Default
+  models.Player:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.PlayerRecord:
+    properties:
+      diff:
+        type: integer
+      draws:
+        type: integer
+      incomplete:
+        type: boolean
+      losses:
+        type: integer
+      name:
+        type: string
+      played:
+        type: integer
+      playerId:
+        type: string
+      points:
+        type: integer
+      rank:
+        type: integer
+      runouts:
+        type: integer
+      tieBroken:
+        type: boolean
+      wins:
+        type: integer
+    type: object
+  models.Round:
+    properties:
+      fixtures:
+        items:
+          $ref: '#/definitions/models.Fixture'
+        type: array
+      index:
+        type: integer
+      isGenerated:
+        type: boolean
+      name:
+        type: string
+      raceTo:
+        type: integer
+    type: object
+  models.RuleSet:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - Blackball
+    - International
+  models.Score:
+    properties:
+      isBye:
+        type: boolean
+      playerId:
+        type: string
+      runouts:
+        type: integer
+      score:
+        type: integer
+    type: object
+  models.Specification:
+    properties:
+      allowEarlyFinish:
+        type: boolean
+      bestOf:
+        type: integer
+      entryFee:
+        type: number
+      entryFeeRequired:
+        type: boolean
+      format:
+        $ref: '#/definitions/models.Format'
+      matchLengthModel:
+        $ref: '#/definitions/models.MatchLengthModel'
+      moneySplit:
+        $ref: '#/definitions/models.MoneySplit'
+      name:
+        type: string
+      raceTo:
+        type: integer
+      randomlyDrawAllRounds:
+        type: boolean
+      requireCompletedRounds:
+        type: boolean
+      ruleSet:
+        $ref: '#/definitions/models.RuleSet'
+      stageCount:
+        type: integer
+      tieBreaker:
+        $ref: '#/definitions/models.TieBreaker'
+      winsRequired:
+        type: integer
+    type: object
+  models.Table:
+    properties:
+      costPerHour:
+        type: number
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.TieBreaker:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - HeadToHead
+    - Runouts
+  models.TieBreakerInfo:
+    properties:
+      forRank:
+        type: integer
+      id:
+        type: string
+      index:
+        type: integer
+      name:
+        type: string
+      players:
+        items:
+          $ref: '#/definitions/models.Player'
+        type: array
+      records:
+        items:
+          $ref: '#/definitions/models.PlayerRecord'
+        type: array
+    type: object
 host: localhost:8000
 info:
   contact:
@@ -12,7 +306,49 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Flyer API
   version: 0.1.0
-paths: {}
+paths:
+  /flyer:
+    get:
+      description: Gets all existing flyers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Gets all existing flyers
+      tags:
+      - Flyers
+    post:
+      description: Creates a new flyer
+      parameters:
+      - description: The flyer
+        in: body
+        name: flyer
+        required: true
+        schema:
+          $ref: '#/definitions/contracts.CreateFlyerRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "503":
+          description: Service Unavailable
+      security:
+      - BearerAuth: []
+      summary: Creates a new flyer
+      tags:
+      - Flyers
 schemes:
 - http
 securityDefinitions:
