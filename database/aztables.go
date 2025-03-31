@@ -31,13 +31,13 @@ func (d *TableStorageDatabase) AddFlyer(ctx context.Context, newFlyer *models.Fl
 
 	marshalled, err := json.Marshal(entity)
 	if err != nil {
-		d.Logger.Error(err)
+		d.Logger.Error(err.Error())
 		return false
 	}
 
 	_, addErr := d.Client.NewClient("Flyers").AddEntity(ctx, marshalled, nil)
 	if addErr != nil {
-		d.Logger.Error(addErr)
+		d.Logger.Error(addErr.Error())
 		return false
 	}
 

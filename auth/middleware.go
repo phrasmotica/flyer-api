@@ -63,8 +63,8 @@ func (m *Middleware) TokenAuth(optional bool) gin.HandlerFunc {
 		roles := claims.ResourceAccess[claims.Azp].Roles
 		c.Set("roles", roles)
 
-		m.Logger.Info("Roles for user %s\n", claims.Username)
-		m.Logger.Info(roles)
+		m.Logger.Info("Roles for user", "username", claims.Username)
+		m.Logger.Info(strings.Join(roles, ", "))
 
 		c.Next()
 	}

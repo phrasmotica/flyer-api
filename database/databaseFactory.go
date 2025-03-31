@@ -19,7 +19,7 @@ func (f *DatabaseFactory) CreateTableStorageClient(connStr string) *aztables.Ser
 	})
 
 	if err != nil {
-		f.Logger.Fatal(err)
+		f.Logger.Fatal(err.Error())
 		return nil
 	}
 

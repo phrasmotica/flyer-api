@@ -61,7 +61,7 @@ func (r *Routes) PostFlyer(c *gin.Context) {
 		return
 	}
 
-	r.Logger.Infof("Added flyer %s\n", newFlyer.ID)
+	r.Logger.Info("Added flyer", "ID", newFlyer.ID)
 
 	c.IndentedJSON(http.StatusNoContent, newFlyer)
 }

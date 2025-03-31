@@ -2,13 +2,14 @@ package logging
 
 import (
 	"log"
+	"log/slog"
+	"os"
 )
 
 type ILogger interface {
-	Info(params ...any)
-	Infof(format string, params ...any)
-	Error(params ...any)
-	Fatal(params ...any)
+	Info(msg string, params ...any)
+	Error(msg string, params ...any)
+	Fatal(msg string)
 }
 
 type ConsoleLogger struct {
@@ -16,18 +17,16 @@ type ConsoleLogger struct {
 	ErrorLevel *log.Logger
 }
 
-func (l *ConsoleLogger) Info(params ...any) {
-	l.InfoLevel.Println(params...)
+func (l *ConsoleLogger) Info(msg string, params ...any) {
+	slog.Info(msg, params...)
 }
 
-func (l *ConsoleLogger) Infof(format string, params ...any) {
-	l.InfoLevel.Printf(format, params...)
+func (l *ConsoleLogger) Error(msg string, params ...any) {
+	slog.Error(msg, params...)
 }
 
-func (l *ConsoleLogger) Error(params ...any) {
-	l.ErrorLevel.Println(params...)
-}
+func (l *ConsoleLogger) Fatal(msg string) {
+	slog.Error(msg)
 
-func (l *ConsoleLogger) Fatal(params ...any) {
-	l.ErrorLevel.Fatal(params...)
+	os.Exit(1)
 }
