@@ -6,25 +6,12 @@ import (
 	"phrasmotica/flyer-api/logging"
 	"phrasmotica/flyer-api/models"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 )
 
 type TableStorageDatabase struct {
 	Client *aztables.ServiceClient
-}
-
-func CreateTableStorageClient(connStr string) *aztables.ServiceClient {
-	client, err := aztables.NewServiceClientFromConnectionString(connStr, &aztables.ClientOptions{
-		ClientOptions: policy.ClientOptions{},
-	})
-
-	if err != nil {
-		logging.Error.Fatal(err)
-		return nil
-	}
-
-	return client
+	Logger logging.ILogger
 }
 
 // GetFlyers implements IDatabase
@@ -44,13 +31,13 @@ func (d *TableStorageDatabase) AddFlyer(ctx context.Context, newFlyer *models.Fl
 
 	marshalled, err := json.Marshal(entity)
 	if err != nil {
-		logging.Error.Println(err)
+		d.Logger.Error(err)
 		return false
 	}
 
 	_, addErr := d.Client.NewClient("Flyers").AddEntity(ctx, marshalled, nil)
 	if addErr != nil {
-		logging.Error.Println(addErr)
+		d.Logger.Error(addErr)
 		return false
 	}
 

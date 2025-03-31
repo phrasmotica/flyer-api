@@ -3,14 +3,10 @@ package routes
 import (
 	"context"
 	"net/http"
-	"phrasmotica/flyer-api/database"
-	"phrasmotica/flyer-api/logging"
 	"phrasmotica/flyer-api/models"
 
 	"github.com/gin-gonic/gin"
 )
-
-var db = database.CreateDb()
 
 // PostFlyer     godoc
 // @Summary      Gets all existing flyers
@@ -22,13 +18,13 @@ var db = database.CreateDb()
 // @Failure      401
 // @Failure      503
 // @Router       /flyer [get]
-func GetFlyers(c *gin.Context) {
+func (r *Routes) GetFlyers(c *gin.Context) {
 	ctx := context.TODO()
 
-	success, flyers := db.GetFlyers(ctx)
+	success, flyers := r.Db.GetFlyers(ctx)
 
 	if !success {
-		logging.Error.Println("Could not get flyers")
+		r.Logger.Error("Could not get flyers")
 		c.AbortWithStatus(http.StatusServiceUnavailable)
 		return
 	}
@@ -48,24 +44,24 @@ func GetFlyers(c *gin.Context) {
 // @Failure      503
 // @Failure      401
 // @Router       /flyer [post]
-func PostFlyer(c *gin.Context) {
+func (r *Routes) PostFlyer(c *gin.Context) {
 	var newFlyer models.Flyer
 
 	if err := c.BindJSON(&newFlyer); err != nil {
-		logging.Error.Println("Invalid body format")
+		r.Logger.Error("Invalid body format")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	ctx := context.TODO()
 
-	if success := db.AddFlyer(ctx, &newFlyer); !success {
-		logging.Error.Println("Could not add flyer")
+	if success := r.Db.AddFlyer(ctx, &newFlyer); !success {
+		r.Logger.Error("Could not add flyer")
 		c.AbortWithStatus(http.StatusServiceUnavailable)
 		return
 	}
 
-	logging.Info.Printf("Added flyer %s\n", newFlyer.ID)
+	r.Logger.Infof("Added flyer %s\n", newFlyer.ID)
 
 	c.IndentedJSON(http.StatusNoContent, newFlyer)
 }

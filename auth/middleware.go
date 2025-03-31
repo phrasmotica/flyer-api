@@ -9,8 +9,12 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+type Middleware struct {
+	Logger logging.ILogger
+}
+
 // taken from https://stackoverflow.com/a/29439630
-func CORSMiddleware() gin.HandlerFunc {
+func (m *Middleware) CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -26,7 +30,7 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func TokenAuth(optional bool) gin.HandlerFunc {
+func (m *Middleware) TokenAuth(optional bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		success, tokenString := parseToken(c)
 
@@ -36,14 +40,14 @@ func TokenAuth(optional bool) gin.HandlerFunc {
 				return
 			}
 
-			logging.Error.Println("Request does not contain an access token")
+			m.Logger.Error("Request does not contain an access token")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		claims, err := ValidateToken(tokenString)
 		if err != nil {
-			logging.Error.Println(err.Error())
+			m.Logger.Error(err.Error())
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -56,20 +60,20 @@ func TokenAuth(optional bool) gin.HandlerFunc {
 		roles := claims.ResourceAccess[claims.Azp].Roles
 		c.Set("roles", roles)
 
-		logging.Info.Printf("Roles for user %s\n", claims.Username)
-		logging.Info.Println(roles)
+		m.Logger.Info("Roles for user %s\n", claims.Username)
+		m.Logger.Info(roles)
 
 		c.Next()
 	}
 }
 
-func CheckPermission(permission string) gin.HandlerFunc {
+func (m *Middleware) CheckPermission(permission string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.GetString("username")
 		roles := c.GetStringSlice("roles")
 
 		if !slices.Contains(roles, permission) {
-			logging.Error.Printf("User %s does not have the %s permission\n", username, permission)
+			m.Logger.Error("User %s does not have the %s permission\n", username, permission)
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}

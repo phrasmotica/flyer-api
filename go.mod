@@ -10,6 +10,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.4
+	go.uber.org/dig v1.18.1
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
 )
 
