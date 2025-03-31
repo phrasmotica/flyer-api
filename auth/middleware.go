@@ -35,15 +35,18 @@ func (m *Middleware) TokenAuth(optional bool) gin.HandlerFunc {
 		success, tokenString := parseToken(c)
 
 		if !success {
+			m.Logger.Info("Request does not contain an access token")
+
 			if optional {
 				c.Next()
 				return
 			}
 
-			m.Logger.Error("Request does not contain an access token")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
+		m.Logger.Info("Request contains an access token")
 
 		claims, err := ValidateToken(tokenString)
 		if err != nil {
