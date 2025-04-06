@@ -87,5 +87,11 @@ func runRouter(r routes.IRoutes, m *auth.Middleware) {
 		flyers.POST("", r.PostFlyer)
 	}
 
+	players := router.Group("/player", m.TokenAuth(true))
+	{
+		players.GET("", r.GetPlayers)
+		players.POST("", r.PostPlayer)
+	}
+
 	router.Run(":8000")
 }
