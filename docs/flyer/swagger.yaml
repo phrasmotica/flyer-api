@@ -13,6 +13,9 @@ definitions:
           $ref: '#/definitions/models.PlayerRecord'
         type: array
       startTime:
+        description: |-
+          TODO: simplify this. The request body only needs a few data points
+          to create a new flyer...
         type: integer
     type: object
   contracts.CreatePlayerRequest:

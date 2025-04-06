@@ -182,6 +182,7 @@ const docTemplate = `{
                     }
                 },
                 "startTime": {
+                    "description": "TODO: simplify this. The request body only needs a few data points\nto create a new flyer...",
                     "type": "integer"
                 }
             }

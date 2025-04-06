@@ -3,9 +3,11 @@ package routes
 import (
 	"context"
 	"net/http"
+	"phrasmotica/flyer-api/contracts"
 	"phrasmotica/flyer-api/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // PostFlyer     godoc
@@ -45,15 +47,23 @@ func (r *Routes) GetFlyers(c *gin.Context) {
 // @Failure      401
 // @Router       /flyer [post]
 func (r *Routes) PostFlyer(c *gin.Context) {
-	var newFlyer models.Flyer
+	var request contracts.CreateFlyerRequest
 
-	if err := c.BindJSON(&newFlyer); err != nil {
+	if err := c.BindJSON(&request); err != nil {
 		r.Logger.Error("Invalid body format")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	ctx := context.TODO()
+
+	newFlyer := models.Flyer{
+		ID:         uuid.NewString(),
+		StartTime:  request.StartTime,
+		FinishTime: request.FinishTime,
+		Phases:     request.Phases,
+		Ranking:    request.Ranking,
+	}
 
 	if success := r.Db.AddFlyer(ctx, &newFlyer); !success {
 		r.Logger.Error("Could not add flyer")
