@@ -43,3 +43,13 @@ func (d *TableStorageDatabase) AddFlyer(ctx context.Context, newFlyer *models.Fl
 
 	return true
 }
+
+// GetPlayers implements IDatabase
+func (d *TableStorageDatabase) GetPlayers(ctx context.Context) (bool, []models.Player) {
+	panic("Not implemented")
+}
+
+// AddPlayer implements IDatabase
+func (d *TableStorageDatabase) AddPlayer(ctx context.Context, newPlayer *models.Player) bool {
+	panic("Not implemented")
+}

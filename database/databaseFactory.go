@@ -39,6 +39,7 @@ func (f *DatabaseFactory) CreateDb() IDatabase {
 	f.Logger.Info("Using data backend: In-Memory")
 
 	return &InMemoryDatabase{
-		Flyers: make([]models.Flyer, 0),
+		Flyers:  make([]models.Flyer, 0),
+		Players: make([]models.Player, 0),
 	}
 }
